@@ -1,0 +1,40 @@
+#!/usr/bin/env groovy
+
+// imports
+@Library("jenkins-shared-libraries@master") _
+import io.abc.*
+
+// properties
+properties([
+    pipelineTriggers([[$class: 'GitHubPushTrigger']]),
+    buildDiscarder(logRotator(numToKeepStr: '15')),
+    disableConcurrentBuilds(),
+    overrideIndexTriggers(false),
+    parameters([
+      choice(name: 'api', choices: "yes\nno", defaultValue: 'yes'),
+      choice(name: 'worker', choices: "yes\nno", defaultValue: 'yes')
+    ])
+])
+
+// instantiate
+
+def p = new pipeline()
+
+// work
+
+def selectedModules = []
+
+node {
+  stage('Module Choice') {
+    for (module in params) {
+      if ( "${module.value}" == "yes" ) {
+        selectedModules.add("${module.key}")
+      }
+    }
+
+    echo "The following modules were selected for deployment:"
+    println selectedModules
+  }
+}
+
+p.run(selectedModules)

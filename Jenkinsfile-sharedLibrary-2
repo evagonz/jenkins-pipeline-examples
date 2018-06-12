@@ -1,0 +1,11 @@
+#!/usr/bin/env groovy
+
+// import
+@Library("jenkins-shared-library-examples@master")
+import io.abc.*
+
+// instantiate
+pl = new pipeline()
+
+// work
+pl.run(api)
